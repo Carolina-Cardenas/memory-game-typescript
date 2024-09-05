@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { imgs } from "../data";
-import { Card } from "./card";
-import { Modal } from "./modal";
+import { Card } from "./Card";
+import { Modal } from "./Modal";
 // A function was created with the for loop that will move the cards in a different order
 interface Card {
    id: string;
