@@ -12,7 +12,7 @@ interface CardProps {
 }
 
 // Convert the component to a typed functional component
-export const Card: React.FC<CardProps> = ({ card, handleCardClick }) => {
+export const Card = ({ card, handleCardClick }: CardProps) => {
    // The card information is exported here
    return (
       <div

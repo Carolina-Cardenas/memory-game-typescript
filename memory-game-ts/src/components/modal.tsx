@@ -8,12 +8,7 @@ interface ModalProps {
    handleNewGame: () => void;
 }
 
-export const Modal: React.FC<ModalProps> = ({
-   gameOver,
-   //setGameOver,
-   moves,
-   handleNewGame,
-}) => {
+export const Modal = ({ gameOver, moves, handleNewGame }: ModalProps) => {
    return (
       <div
          className={`${
