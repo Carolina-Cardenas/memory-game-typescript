@@ -1,63 +1,66 @@
 import React, { useEffect, useState } from "react";
 import { imgs } from "../data";
-import { Card } from "./Card";
-import { Modal } from "./Modal";
-// A function was created with the for loop that will move the cards in a different order
-interface Card {
-   id: string;
-   flipped: boolean;
-   matched: boolean;
-   img: string;
+import { Card } from "./card";
+import { Modal } from "./modal";
+
+// Define types for cards and images
+interface Image {
+   id: string; // Changed to string for compatibility
+   src: string;
 }
 
-// Generic function to shuffle any array type
+interface CardType extends Image {
+   flipped: boolean;
+   matched: boolean;
+}
+
+// Generic function to shuffle an array of any type
 const shuffleArray = <T,>(array: T[]): T[] => {
    for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]]; //positions are reversed
    }
-   return array; //the array is returnen completely shuffled
+   return array; // Return the fully shuffled array
 };
 
-export const Board: React.FC = () => {
-   const [cards, setCards] = useState<Card[]>([]);
-   const [flippedCards, setFlippedCards] = useState<Card[]>([]);
+export const Board = (): JSX.Element => {
+   const [cards, setCards] = useState<CardType[]>([]);
+   const [flippedCards, setFlippedCards] = useState<CardType[]>([]);
    const [isDisabled, setIsDisabled] = useState<boolean>(false);
    const [moves, setMoves] = useState<number>(0);
-   const [gameOver, setGameOver] = useState(false);
+   const [gameOver, setGameOver] = useState<boolean>(false);
 
    //A new function is created (createBoard) where the images are imported from the data.js array, a flatMap is used to create a duplicate array to match the same images, we have an array with 10 elements then it will be duplicated to 20 elements, and each element will be modified with the ID, two pairs of images but with different IDs
 
-   const createBoard = () => {
-      const duplicatecards = imgs.flatMap((img, i) => {
-         const duplicate = {
+   const createBoard = (): void => {
+      const duplicateCards: Image[] = imgs.flatMap((img: Image) => {
+         const duplicate: Image = {
             ...img,
             id: img.id + imgs.length,
          };
          return [img, duplicate];
       });
 
-      const newCards = shuffleArray(duplicatecards);
-      const cards = newCards.map((card) => {
-         return {
-            ...card,
-            flipped: false,
-            matched: false,
-         };
-      });
+      const newCards: Image[] = shuffleArray(duplicateCards);
+
+      const cards: CardType[] = newCards.map((card) => ({
+         ...card,
+         flipped: false,
+         matched: false,
+      }));
+
       setCards(cards);
    };
 
    useEffect(() => {
-      createBoard(); //It is called the Function
+      createBoard();
    }, []);
 
-   //we have a stament that is used for the click of the current card that is being used,The function takes an id parameter, which represents the unique identifier of the clicked card.The filter method is used to find the card corresponding to the id in the cards array. The found card is stored in the currentCard variable,
-
+   // Handle card click
    const handleCardClick = (id: string): void => {
       if (isDisabled) return;
 
-      const currentCard = cards.find((card: Card) => card.id === id);
+      const currentCard = cards.find((card: CardType) => card.id === id);
 
       if (currentCard && !currentCard.flipped && !currentCard.matched) {
          currentCard.flipped = true;
@@ -69,7 +72,7 @@ export const Board: React.FC = () => {
             setIsDisabled(true);
             const [firstCard, secondCard] = newFlippedCards;
 
-            if (firstCard.img === secondCard.img) {
+            if (firstCard.src === secondCard.src) {
                firstCard.matched = true;
                secondCard.matched = true;
                setIsDisabled(false);
@@ -77,7 +80,7 @@ export const Board: React.FC = () => {
                setTimeout(() => {
                   firstCard.flipped = false;
                   secondCard.flipped = false;
-                  setCards(cards);
+                  setCards([...cards]);
                   setIsDisabled(false);
                }, 1000);
             }
@@ -86,7 +89,7 @@ export const Board: React.FC = () => {
             setMoves(moves + 1);
          }
 
-         setCards(cards);
+         setCards([...cards]);
       }
 
       if (cards.every((card) => card.matched)) {
@@ -95,23 +98,14 @@ export const Board: React.FC = () => {
       }
    };
 
-   //reset the states,
-
+   // Reset the game
    const handleNewGame = (): void => {
-      setCards([]); // all cards will be emptied and it will be an empty array
-      createBoard(); // The function is reused when you click the button
-      setMoves(0); // game move counter
-      setGameOver(false); // When the game ends it will be true but it will change to false
-      setIsDisabled(false); //Finally, it will be its default state (false)
+      setCards([]);
+      createBoard();
+      setMoves(0);
+      setGameOver(false);
+      setIsDisabled(false);
    };
-
-   //the game has a button that will use the previous options to start the new game (New cats Game)...
-   //at the beginning of the return they have a conditional that says (if it is gameOver it will use the div that is in the conditional)
-   // Modal is imported outside the card game that will only be shown if the game is finished, the modal has some properties:
-   // gameOver={gameOver} (then end of the game)
-   //setGameOver={setGameOver} (changes the game state)
-   // moves={moves} summary of moves
-   // handleNewGame={handleNewGame} to start a new game
 
    return (
       <>
@@ -142,7 +136,6 @@ export const Board: React.FC = () => {
 
             <Modal
                gameOver={gameOver}
-               setGameOver={setGameOver}
                moves={moves}
                handleNewGame={handleNewGame}
             />
