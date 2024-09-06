@@ -3,12 +3,13 @@ import React from "react";
 // Defines types for the card object and props
 interface CardProps {
    card: {
-      id: string;
+      id: number;
       img: string;
       alt: string;
       flipped: boolean;
+      matched: boolean;
    };
-   handleCardClick: (id: string) => void;
+   handleCardClick: (id: number) => void;
 }
 
 // Convert the component to a typed functional component

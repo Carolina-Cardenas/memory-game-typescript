@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { imgs } from "../data";
-import { Card } from "./card";
-import { Modal } from "./modal";
+import { Card } from "./Card";
+import { Modal } from "./Modal";
 
 // Define types for cards and images
 interface Image {
-   id: string; // Changed to string for compatibility
-   src: string;
+   id: number; // Changed to number to match data
+   img: string; // Changed to src to img to match data
+   alt: string;
 }
 
 interface CardType extends Image {
@@ -57,7 +58,7 @@ export const Board = (): JSX.Element => {
    }, []);
 
    // Handle card click
-   const handleCardClick = (id: string): void => {
+   const handleCardClick = (id: number): void => {
       if (isDisabled) return;
 
       const currentCard = cards.find((card: CardType) => card.id === id);
@@ -72,7 +73,7 @@ export const Board = (): JSX.Element => {
             setIsDisabled(true);
             const [firstCard, secondCard] = newFlippedCards;
 
-            if (firstCard.src === secondCard.src) {
+            if (firstCard.img === secondCard.img) {
                firstCard.matched = true;
                secondCard.matched = true;
                setIsDisabled(false);
