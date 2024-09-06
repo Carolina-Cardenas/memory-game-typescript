@@ -1,4 +1,4 @@
-import { Board } from "./components/board";
+import { Board } from "./components/Board";
 
 function App() {
    return <Board />;
